@@ -188,7 +188,6 @@ jobs:
           no_output_timeout: 30m
           working_directory: ./backend
           command: |
-            cd backend
             npm install
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
@@ -217,9 +216,11 @@ jobs:
 #       - run:
 #           name: Get backend url
 #           command: |
-#             # your code here
+#             export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
 #             export API_URL="http://${BACKEND_IP}:3030"
 #             echo "${API_URL}"
+#             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
+#             cat frontend/.env
 #       - run:
 #           name: Deploy frontend objects
 #           command: |
