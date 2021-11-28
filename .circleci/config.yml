@@ -187,7 +187,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-            fingerprint: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
+          fingerprints: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
       - attach_workspace:
           at: ~/
       - run:
@@ -271,13 +271,14 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprint: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
+          fingerprints: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
       - attach_workspace:
           at: ~/
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible
+            apk add --update ansible curl nodejs npm tar gzip
+            pip install awscli
       - run:
           name: Deploy backend
           command: |
