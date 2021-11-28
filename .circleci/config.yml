@@ -316,7 +316,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt update #apk add --update curl nodejs npm
+              sudo apt update && sudo apt upgrade
+              sudo apt install curl
+              sudo apt-get install python-pip
+              sudo pip install awscli
+              aws --version
       - run:
           name: Backend smoke test.
           command: |
@@ -350,7 +354,11 @@ jobs:
 #       - run:
 #           name: Install dependencies
 #           command: |
-#             # your code here
+#             sudo apt update && sudo apt upgrade
+              # sudo apt install curl
+              # sudo apt-get install python-pip
+              # sudo pip install awscli
+              # aws --version
 #       - run:
 #           name: Update cloudfront distribution
 #           command: |
@@ -360,6 +368,25 @@ jobs:
               # --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
               # --tags project=udapeople
 #       # Here's where you will add some code to rollback on failure  
+
+# cleanup:
+#     docker:
+#       - image:
+#     steps:
+#       - checkout
+#       - run:
+#           name: Get old stack workflow id
+#           command: |
+#             # your code here
+#             export OldWorkflowID="the id here"
+#             export STACKS=[] #put the list of stacks here
+      # - run:
+      #     name: Remove old stacks and files
+      #     command: |
+      #       if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
+      #       then
+      #         # your code here
+      #       fi
 
 workflows:
   default:
