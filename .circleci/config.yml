@@ -186,13 +186,12 @@ jobs:
           command: |
             cd backend
             npm install
-#           run and sve the migration output
-            npm run migrations > migrations_dump.txt
+            npm run migrations >> migrations_dump.txt
 #           exit 1
       - run:
           name: Send migration results to memstash
           command: |
-             if grep -q "has been executed successfully." ~/cdond-c3-projectstarter/backend/migrations_dump.txt
+             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
              then
                curl -H "Content-Type: text/plain" -H "token: 638dca8a-6633-42fb-9162-44ee04dd0ea0" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
              fi
