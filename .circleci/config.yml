@@ -31,7 +31,7 @@ commands:
           name: Revert migrations
           working_directory: ./backend
           command: |
-            SUCCESS = $(curl "token: 19e508c1-4195-4c40-8019-b7af2e0ab0bc" --request GET https://api.memstash.io/values/SUCCESS_${CIRCLE_WORKFLOW_ID:0:7})
+            SUCCESS = $(curl -H "token: 638dca8a-6633-42fb-9162-44ee04dd0ea0" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
             if [[$SUCCESS == 1]];
             then
               npm install
