@@ -1,0 +1,24 @@
+---
+- name: Testing copy of the local to remote file
+  become: true
+  copy:
+        src: artifact.tar.gz
+        dest: .circleci/backend
+
+- name: Create directory
+  file: 
+      path: .circleci/backend
+      state: directory
+
+- name: unzip artifact
+  ansible.builtin.unarchive:
+    src: artifact.tar.gz
+    dest: .circleci/backend
+
+- name: start app
+  become: true
+  shell: |
+    cd .circleci/backend
+    npm install
+    pm2 stop default
+    pm2 start npm -- start
