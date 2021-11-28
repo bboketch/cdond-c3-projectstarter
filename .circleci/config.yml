@@ -234,7 +234,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum install -y tar gzip
+            apt update
+            apt install tar
+            apt install gzip
       - run:
           name: Get backend url
           command: |
