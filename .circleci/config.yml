@@ -234,9 +234,8 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt-get update
-            yum install -y tar gzip
-            yum install -y install nodejs
+            yum -y install tar gzip
+            yum -y install nodejs
       - run:
           name: Get backend url
           command: |
@@ -277,7 +276,7 @@ jobs:
 #       - run:
 #           name: Deploy backend
 #           command: |
-#             # cd backend
+#              cd backend
 #              npm i
 #              npm run build
 #              cd ..
