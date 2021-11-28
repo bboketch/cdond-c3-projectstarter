@@ -271,7 +271,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-            fingerprint: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
+          fingerprint: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
       - attach_workspace:
           at: ~/
       - run:
@@ -284,14 +284,20 @@ jobs:
             cd backend
             npm i
             npm run build
+            cp package* ./dist
             cd ..
 #               Zip the directory
-            tar -C backend -czvf artifact.tar.gz.
+            tar -C backend -czvf artifact.tar.gz .
             cd .circleci/ansible
             echo "Contents of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-       # Here's where you will add some code to rollback on failure  
+      - destroy-environment:
+          id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          when: on_fail
+      - revert-migrations:
+          id: "${CIRCLE_WORKFLOW_ID:0:7}"        
+          when: on_fail
 
 workflows:
   default:
