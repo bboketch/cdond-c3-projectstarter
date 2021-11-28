@@ -234,9 +234,9 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apt update
-            apt install tar
-            apt install gzip
+            apt-get update
+            yum install -y tar gzip
+            yum install -y install nodejs
       - run:
           name: Get backend url
           command: |
