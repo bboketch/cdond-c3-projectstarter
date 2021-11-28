@@ -300,12 +300,12 @@ jobs:
             echo "Contents of the inventory.txt file is -------"
             cat inventory.txt
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
-      - destroy-environment:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"
-          when: on_fail
-      - revert-migrations:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"        
-          when: on_fail
+      # - destroy-environment:
+      #     id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      #     when: on_fail
+      # - revert-migrations:
+      #     id: "${CIRCLE_WORKFLOW_ID:0:7}"        
+      #     when: on_fail
   
   # smoke-test:
   #   docker:
