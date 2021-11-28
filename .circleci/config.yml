@@ -31,7 +31,7 @@ commands:
           name: Revert migrations
           working_directory: ./backend
           command: |
-            SUCCESS = 'curl -H "token: 638dca8a-6633-42fb-9162-44ee04dd0ea0" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}'
+            SUCCESS = 'curl -H "token: 19e508c1-4195-4c40-8019-b7af2e0ab0bc" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}'
             echo $SUCCESS
             if [[$SUCCESS == 1]];
             then
@@ -221,7 +221,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl -H "Content-Type: text/plain" -H "token: 638dca8a-6633-42fb-9162-44ee04dd0ea0" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+              curl -H "Content-Type: text/plain" -H "token: 19e508c1-4195-4c40-8019-b7af2e0ab0bc" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
             fi
 #            exit 1
 #        Here's where you will add some code to rollback on failure      
