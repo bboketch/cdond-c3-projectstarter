@@ -316,7 +316,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl nodejs npm
+            apt update #apk add --update curl nodejs npm
       - run:
           name: Backend smoke test.
           command: |
@@ -342,6 +342,24 @@ jobs:
             fi
        # Here's where you will add some code to rollback on failure  
 
+#   cloudfront-update:
+#     docker:
+#       - image: circleci/node:13.8.0
+#     steps:
+#       - checkout
+#       - run:
+#           name: Install dependencies
+#           command: |
+#             # your code here
+#       - run:
+#           name: Update cloudfront distribution
+#           command: |
+#             aws cloudformation deploy \
+              # --template-file .circleci/files/cloudfront.yml \
+              # --stack-name InitialStack \
+              # --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+              # --tags project=udapeople
+#       # Here's where you will add some code to rollback on failure  
 
 workflows:
   default:
