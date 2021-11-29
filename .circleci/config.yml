@@ -33,7 +33,7 @@ commands:
           command: |
             echo "revert migrations begins..."
             SUCCESS=$(curl -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if [[ $SUCCESS == 1]]
+            if (( $SUCCESS == 1));
             then
               echo "roll back migration started"
               cd ~/project/backend
@@ -327,11 +327,11 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --region us-east-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
-            echo "${BACKEND_IP}"
+            export BACKEND_IP=$(aws ec2 describe-instances --region us-east-1 --query "Reservations[*].Instances[*].PublicIpAddress" --filters "Name=tag:Name,Values=udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
+            echo ${BACKEND_IP}
             export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
-            if curl "${API_URL}/api/status" | grep "ok"
+            echo ${API_URL}
+            if curl -s "${API_URL}/api/status" | grep "ok"
             then
               exit 0
             else
