@@ -16,9 +16,9 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            echo "Destroying environment: << parameters.workflow_id >> "
-            aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.workflow_id >>
-            aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.workflow_id >>
+            echo "Destroying environment: ${CIRCLE_WORKFLOW_ID:0:7} "
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
@@ -30,15 +30,18 @@ commands:
     steps:
       - run:
           name: Revert migrations
-          working_directory: ./backend
           command: |
-            SUCCESS = $(curl -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if (($SUCCESS == 1));
+          echo "revert migrations begins..."
+            SUCCESS=$(curl -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            if [[ $SUCCESS == 1]];
             then
+              echo "roll back migration started"
               cd ~/project/backend
               npm install
               npm run migration:revert
+              echo "roll back completion"
             fi
+              echo "revert migrations finish..."
 
                  
 jobs:
