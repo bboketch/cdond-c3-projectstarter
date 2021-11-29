@@ -347,28 +347,28 @@ jobs:
             fi
        # Here's where you will add some code to rollback on failure  
 
-#   cloudfront-update:
-#     docker:
-#       - image: circleci/node:13.8.0
-#     steps:
-#       - checkout
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             sudo apt update && sudo apt upgrade
-              # sudo apt install curl
-              # sudo apt-get install python-pip
-              # sudo pip install awscli
-              # aws --version
-#       - run:
-#           name: Update cloudfront distribution
-#           command: |
-#             aws cloudformation deploy \
-              # --template-file .circleci/files/cloudfront.yml \
-              # --stack-name InitialStack \
-              # --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
-              # --tags project=udapeople
-#       # Here's where you will add some code to rollback on failure  
+  cloudfront-update:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt update && sudo apt upgrade
+            sudo apt install curl
+            sudo apt-get install python-pip
+            sudo pip install awscli
+            aws --version
+      - run:
+          name: Update cloudfront distribution
+          command: |
+            aws cloudformation deploy \
+              --template-file .circleci/files/cloudfront.yml \
+              --stack-name InitialStack \
+              --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=udapeople
+      # Here's where you will add some code to rollback on failure  
 
 # cleanup:
 #     docker:
@@ -417,7 +417,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-  #     - cloudfront-update:
-  #         requires: [smoke-test]
+      - cloudfront-update:
+          requires: [smoke-test]
   #     - cleanup:
   #         requires: [cloudfront-update]
