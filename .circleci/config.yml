@@ -289,7 +289,7 @@ jobs:
             cd backend
             npm i
             npm run build
-            cp package* ./dist
+            cp package* .circleci/backend/dist
             cd ..
 #               Zip the directory
       - run:
