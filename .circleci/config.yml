@@ -33,7 +33,7 @@ commands:
           command: |
             echo "revert migrations begins..."
             SUCCESS=$(curl -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if [[ $SUCCESS == 1]]
+            if (( $SUCCESS == 1));
             then
               echo "roll back migration started"
               cd ~/project/backend
