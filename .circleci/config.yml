@@ -31,7 +31,7 @@ commands:
       - run:
           name: Revert migrations
           command: |
-          echo "revert migrations begins..."
+            echo "revert migrations begins..."
             SUCCESS=$(curl -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
             if [[ $SUCCESS == 1]];
             then
@@ -39,7 +39,7 @@ commands:
               cd ~/project/backend
               npm install
               npm run migration:revert
-              echo "roll back completion"
+              echo "roll back "
             fi
               echo "revert migrations finish..."
 
