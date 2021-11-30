@@ -363,7 +363,6 @@ jobs:
             apk update
             apk upgrade
             apk add curl
-            apt-get install python-pip
       - run:
           name: Update cloudfront distribution
           command: |
