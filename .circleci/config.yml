@@ -375,7 +375,7 @@ jobs:
 
   cleanup:
     docker:
-      - image: AMAZON/AWS-CLI
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run: yum install -y tar gzip
