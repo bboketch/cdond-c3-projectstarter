@@ -312,6 +312,7 @@ jobs:
   
   smoke-test:
     docker:
+      - image: python:3.7-alpine3.11
      steps:
       - checkout
       - run:
@@ -334,8 +335,7 @@ jobs:
       #         exit 0
       #       else
             #   exit 1
-            # fi - image: python:3.7-alpine3.11
-    
+            # fi 
       - run:
           name: Frontend smoke test.
           command: |
