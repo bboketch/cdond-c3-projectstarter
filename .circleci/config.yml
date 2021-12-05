@@ -338,8 +338,8 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-              export BACKEND_PUBLIC_DNS=$(curl -H "token: ${MEMSTASH_TOKEN}" --request GET http://api.memstash.io/values/PUBLIC_DNS_NAME_${CIRCLE_WORKFLOW_ID:0:7})
-              BACKEND_API_URL="http://${BACKEND_PUBLIC_DNS}:3030"
+              export BACKEND_PUBLIC_DNS=$(curl -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request GET http://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+              BACKEND_API_URL="http://${BACKEND_PUBLIC_DNS}:3030/api/status"
               echo "Backend API URL: "$BACKEND_API_URL
               echo ENVIRONMENT=production > "frontend/.env"
               echo NODE_ENV=production >> "frontend/.env"
