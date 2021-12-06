@@ -336,18 +336,18 @@ jobs:
       # - run:
       #     name: Backend smoke test.
       #     command: |
-# export BACKEND_URL=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
-# echo http://${BACKEND_URL}:3030/api/status
-# if 
-#   curl -s http://${BACKEND_URL}:3030/api/status | grep "ok"
-# then
-#   exit 0
-# else
-#   exit 1
-# fi
-    - run:
-        name: Backend smoke test.
-        command: |
+      # export BACKEND_URL=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
+      # echo http://${BACKEND_URL}:3030/api/status
+      # if 
+      #   curl -s http://${BACKEND_URL}:3030/api/status | grep "ok"
+      # then
+      #   exit 0
+      # else
+      #   exit 1
+      # fi
+      - run:
+          name: Backend smoke test.
+          command: |
             export BACKEND_PUBLIC_DNS=$(curl -H "token: a959d0f9-c2a8-448c-ae41-5e8ed7804900" --request GET http://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
             BACKEND_API_URL="http://${BACKEND_PUBLIC_DNS}:3030/api/status"
             echo "Backend API URL: "$BACKEND_API_URL
