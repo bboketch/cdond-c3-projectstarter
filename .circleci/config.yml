@@ -33,7 +33,7 @@ commands:
           command: |
             echo "revert migrations begins..."
             SUCCESS=$(curl -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if (( $SUCCESS == 1));
+            if (( $SUCCESS == "1" ));
             then
               echo "roll back migration started"
               cd ~/project/backend
@@ -169,12 +169,12 @@ jobs:
                 --template-file .circleci/files/frontend.yml \
                 --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-                --tags project=udapeople
+                --tags project=udapeople-frontend--${CIRCLE_WORKFLOW_ID:0:7}
 
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-              echo "[all]" >> .circleci/ansible/inventory.txt
+              echo "[web]" >> .circleci/ansible/inventory.txt
               aws ec2 describe-instances \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
                 --output text >> inventory.txt
@@ -393,7 +393,7 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
-              --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
       # Here's where you will add some code to rollback on failure  
 
