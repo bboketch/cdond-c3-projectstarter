@@ -10,7 +10,7 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub "udapeople-${WorkflowID}.s3.amazonaws.com"
+      BucketName: !Sub "udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com"
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
