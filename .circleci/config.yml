@@ -42,7 +42,6 @@ commands:
               echo "roll back "
             fi
               echo "revert migrations finish..."
-
                  
 jobs:
   build-frontend:
@@ -222,6 +221,7 @@ jobs:
       - run:
           name: Send migration results to memstash
           command: |
+            cat ~/project/backend/migrations_dump.txt
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
               curl -H "Content-Type: text/plain" -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
