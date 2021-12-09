@@ -33,7 +33,7 @@ commands:
           command: |
             echo "revert migrations begins..."
             SUCCESS=$(curl -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if (( $SUCCESS == "1" ));
+            if (( $SUCCESS == "1" ))
             then
               echo "roll back migration started"
               cd ~/project/backend
@@ -224,7 +224,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl -H "Content-Type: text/plain" -H "token: a959d0f9-c2a8-448c-ae41-5e8ed7804900" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+              curl -H "Content-Type: text/plain" -H "token: 0a1c2611-cffe-4f8c-8b6b-319e898662f1" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
             fi
 #            exit 1
       - save_cache:
@@ -253,7 +253,7 @@ jobs:
           name: Get backend url
           command: |
               export BACKEND_PUBLIC_DNS=$(curl -H "token: a959d0f9-c2a8-448c-ae41-5e8ed7804900" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-              BACKEND_API_URL="https://${BACKEND_PUBLIC_DNS}:3030/api/status"
+              BACKEND_API_URL="http://${BACKEND_PUBLIC_DNS}:3030/api/status"
               echo "Backend API URL: "$BACKEND_API_URL
               echo ENVIRONMENT=production > "frontend/.env"
               echo NODE_ENV=production >> "frontend/.env"
