@@ -6,13 +6,13 @@
     upgrade: "yes"
 
 - name: "install dependencies."
-  become: yes
+  become: true
   apt:
     name: ["nodejs", "npm"]
     update_cache: yes
 
 - name: "install pm2"
-  become: yes
+  become: true
   npm:
     name: pm2
     global: yes
