@@ -31,11 +31,11 @@ commands:
       - run:
           name: Revert migrations
           command: |
-            echo "revert migrations begins..."
-          # SUCCESS=$(curl -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-          # if (( $SUCCESS == "1" ))
-          # then
-          #   echo "roll back migration started"
+#  echo "revert migrations begins..."
+# SUCCESS=$(curl -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+# if (( $SUCCESS == "1" ))
+# then
+#   echo "roll back migration started"
             cd ~/project/backend
             npm install
             npm run migration:revert
