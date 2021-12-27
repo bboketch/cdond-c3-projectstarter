@@ -224,6 +224,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
+      - restore_cache:
+          keys: [backend-build]
       - attach_workspace:
           at: ~/
       - run:
@@ -255,6 +257,8 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - restore_cache:
+          keys: [frontend-deploy]
       - attach_workspace:
           at: ~/
       - run:
@@ -285,6 +289,9 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp ./dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - save_cache:
+          paths: [frontend/node_modules]
+          key: frontend-deploy
 #       Here's where you will add some code to rollback on failure      
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
@@ -319,6 +326,8 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - restore_cache:
+          keys: [backend-deploy]
       - add_ssh_keys:
           fingerprints: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
       - attach_workspace:
@@ -363,6 +372,9 @@ jobs:
             echo "Contents of the inventory.txt file is -------"
             cat .circleci/ansible/inventory.txt
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-deploy
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
           when: on_fail
