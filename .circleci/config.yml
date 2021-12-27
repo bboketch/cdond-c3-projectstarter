@@ -236,6 +236,9 @@ jobs:
             npm run migrations:revert
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
+     - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
       # - run:
       #     name: Send migration results to memstash
       #     command: |
@@ -245,9 +248,6 @@ jobs:
       #         curl -H "Content-Type: text/plain" -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
       #       fi
 #            exit 1
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
 #        Here's where you will add some code to rollback on failure      
 
   deploy-frontend:
@@ -275,6 +275,24 @@ jobs:
             echo API_URL=$API_URL >> "frontend/.env" 
             echo $API_URL
             echo "${API_URL}"
+      - run:
+          name: Deploy frontend objects
+          command: |
+            cd frontend
+            ls -la
+            cat .env
+            npm install
+            npm run build
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp ./dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+#       Here's where you will add some code to rollback on failure      
+      - destroy-environment:
+          id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          when: on_fail
+      - revert-migrations:
+          id: "${CIRCLE_WORKFLOW_ID:0:7}"        
+          when: on_fail
+
 # sudo apt update && sudo apt upgrade
 # sudo apt install curl
 # sudo apt-get install python-pip
@@ -295,23 +313,6 @@ jobs:
 # echo "${API_URL}"
 # echo API_URL="http://${BACKEND_IP}:3030/api/status" >> frontend/.env
 # cat frontend/.env
-      - run:
-          name: Deploy frontend objects
-          command: |
-            cd frontend
-            ls -la
-            cat .env
-            npm install
-            npm run build
-            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
-            aws s3 cp ./dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-#       Here's where you will add some code to rollback on failure      
-      - destroy-environment:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"
-          when: on_fail
-      - revert-migrations:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"        
-          when: on_fail
 
   deploy-backend:
     docker:
@@ -382,19 +383,7 @@ jobs:
               apk update
               apk upgrade
               apk add curl
-              apk add --no-cache --upgrade bash
-      # - run:
-      #     name: Backend smoke test.
-      #     command: |
-      # export BACKEND_URL=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
-      # echo http://${BACKEND_URL}:3030/api/status
-      # if 
-      #   curl -s http://${BACKEND_URL}:3030/api/status | grep "ok"
-      # then
-      #   exit 0
-      # else
-      #   exit 1
-      
+              apk add --no-cache --upgrade bash   
       - run:
           name: Backend smoke test.
           command: |
@@ -402,11 +391,7 @@ jobs:
             echo ${BACKEND_URL}
             echo ENVIRONMENT=production > "frontend/.env"
             echo NODE_ENV=production >> "frontend/.env"
-            echo API_URL=$BACKEND_URL >> "frontend/.env" 
-# export BACKEND_PUBLIC_DNS=$(curl -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request GET http://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-# BACKEND_API_URL="http://${BACKEND_PUBLIC_DNS}:3030/api/status"
-# echo "Backend API URL: "$BACKEND_API_URL
-            
+            echo API_URL=$BACKEND_URL >> "frontend/.env"    
       - run:
           name: Frontend smoke test.
           command: |
@@ -427,6 +412,22 @@ jobs:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"        
           when: on_fail
 
+      # - run:
+      #     name: Backend smoke test.
+      #     command: |
+      # export BACKEND_URL=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=udapeople-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
+      # echo http://${BACKEND_URL}:3030/api/status
+      # if 
+      #   curl -s http://${BACKEND_URL}:3030/api/status | grep "ok"
+      # then
+      #   exit 0
+      # else
+      #   exit 1
+# export BACKEND_PUBLIC_DNS=$(curl -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request GET http://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+# BACKEND_API_URL="http://${BACKEND_PUBLIC_DNS}:3030/api/status"
+# echo "Backend API URL: "$BACKEND_API_URL
+
+         
   cloudfront-update:
     docker:
       - image: python:3.7-alpine3.11
