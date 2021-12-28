@@ -36,6 +36,9 @@ commands:
             npm run migration:revert
 #  echo "revert migrations begins..."
 # SUCCESS=$(curl -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+  #  - run: >-
+  #         curl -X POST -H 'Content-type: application/json'
+  #         --data '{"text":"This is a test!"}' [WEBHOOK URL]
 # if (( $SUCCESS == "1" ))
 # then
 #   echo "roll back migration started"
@@ -238,9 +241,15 @@ jobs:
             npm run migrations:revert
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
-      # - save_cache:
-      #     paths: [backend/node_modules]
-      #     key: backend-build
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
+      - run:
+          name: Connect to host
+          command: |
+            cat ~/project/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
       # - run:
       #     name: Send migration results to memstash
       #     command: |
@@ -273,12 +282,11 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export API_URL=$(cat backend-url-${CIRCLE_WORKFLOW_ID:0:7}.txt)
-            echo ENVIRONMENT=production > "frontend/.env"
-            echo NODE_ENV=production >> "frontend/.env"
-            echo API_URL=$API_URL >> "frontend/.env" 
-            echo $API_URL
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            export API_URL="http://${BACKEND_IP}:3030/api/status"
             echo "${API_URL}"
+            echo API_URL="http://${BACKEND_IP}:3030/api/status" >> frontend/.env
+            cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
@@ -315,11 +323,12 @@ jobs:
 #         echo NODE_ENV=production >> "frontend/.env"
 #         echo API_URL=$BACKEND_API_URL >> "frontend/.env" 
 
-# export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-# export API_URL="http://${BACKEND_IP}:3030/api/status"
-# echo "${API_URL}"
-# echo API_URL="http://${BACKEND_IP}:3030/api/status" >> frontend/.env
-# cat frontend/.env
+            # export API_URL=$(cat backend-url-${CIRCLE_WORKFLOW_ID:0:7}.txt)
+            # echo ENVIRONMENT=production > "frontend/.env"
+            # echo NODE_ENV=production >> "frontend/.env"
+            # echo API_URL=$API_URL >> "frontend/.env" 
+            # echo $API_URL
+            # echo "${API_URL}"
 
   deploy-backend:
     docker:
