@@ -224,8 +224,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
+      # - restore_cache:
+      #     keys: [backend-build]
       - attach_workspace:
           at: ~/
       - run:
@@ -238,9 +238,9 @@ jobs:
             npm run migrations:revert
             npm run migrations > migrations_dump.txt
             cat migrations_dump.txt
-      - save_cache:
-          paths: [backend/node_modules]
-          key: backend-build
+      # - save_cache:
+      #     paths: [backend/node_modules]
+      #     key: backend-build
       # - run:
       #     name: Send migration results to memstash
       #     command: |
