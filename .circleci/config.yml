@@ -263,8 +263,8 @@ jobs:
             then
               results=1
               echo $results
-# curl -H "Content-Type: text/plain" -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
             fi
+# curl -H "Content-Type: text/plain" -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
 #            exit 1
 #        Here's where you will add some code to rollback on failure      
 
