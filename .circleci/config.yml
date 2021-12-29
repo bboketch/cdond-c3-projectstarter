@@ -31,9 +31,14 @@ commands:
       - run:
           name: Revert migrations
           command: |
-            cd ~/project/backend
-            npm install
-            npm run migration:revert
+            SUCCESS=1
+            echo {$SUCCESS}
+            if [ ${SUCCESS} == "1" ]
+            then
+              cd ~/project/backend
+              npm install
+              npm run migration:revert
+            fi
 #  echo "revert migrations begins..."
 # SUCCESS=$(curl -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
   #  - run: >-
@@ -227,8 +232,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      # - restore_cache:
-      #     keys: [backend-build]
+      - restore_cache:
+          keys: [backend-build]
       - attach_workspace:
           at: ~/
       - run:
@@ -250,14 +255,16 @@ jobs:
             cat ~/project/backend/migrations_dump.txt
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-      # - run:
-      #     name: Send migration results to memstash
-      #     command: |
-      #       cat ~/project/backend/migrations_dump.txt
-      #       if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
-      #       then
-      #         curl -H "Content-Type: text/plain" -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-      #       fi
+      - run:
+          name: Send migration results to memstash
+          command: |
+            cat ~/project/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+              results=1
+              echo $results
+# curl -H "Content-Type: text/plain" -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+            fi
 #            exit 1
 #        Here's where you will add some code to rollback on failure      
 
@@ -282,10 +289,12 @@ jobs:
       - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            export BACKEND_IP=$(aws ec2 describe-instances --filters Name=tag:Name,Values="backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             export API_URL="http://${BACKEND_IP}:3030/api/status"
-            echo "${API_URL}"
+            echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030/api/status" >> frontend/.env
+            echo ENVIRONMENT=production > "frontend/.env"
+            echo NODE_ENV=production >> "frontend/.env"
             cat frontend/.env
       - run:
           name: Deploy frontend objects
@@ -408,11 +417,18 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            export BACKEND_URL=$(cat backend-url-${CIRCLE_WORKFLOW_ID:0:7}.txt)
-            echo ${BACKEND_URL}
+            export BACKEND_IP=$(aws ec2 describe-instances --filters Name=tag:Name,Values="backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
+            export API_URL="http://${BACKEND_IP}:3030/api/status"
+            echo "API_URL = ${API_URL}"
             echo ENVIRONMENT=production > "frontend/.env"
-            echo NODE_ENV=production >> "frontend/.env"
-            echo API_URL=$BACKEND_URL >> "frontend/.env"    
+            echo NODE_ENV=production >> "frontend/.env" 
+            if curl -s ${URL} | grep "ok"
+            then
+                # Change this to 0 after the job fails
+              return 0
+            else
+              return 1
+            fi 
       - run:
           name: Frontend smoke test.
           command: |
