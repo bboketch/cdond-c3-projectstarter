@@ -192,11 +192,11 @@ jobs:
               aws ec2 describe-instances \
                 --filters Name=tag:Name,Values="backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --output text >> inventory.txt
+                --output text >> backend/inventory.txt
       - persist_to_workspace:
-           root: ~/
+           root: backend
            paths:
-             - project/.circleci/ansible/inventory.txt
+             - inventory.txt
       # Here's where you will add some code to rollback on failur  
 
   configure-infrastructure:
@@ -207,7 +207,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
       - attach_workspace:
-          at: ~/
+          at: /tmp/backend
       - run:
           name: Install dependencies
           command: |
