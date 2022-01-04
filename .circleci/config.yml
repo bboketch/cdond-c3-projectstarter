@@ -188,11 +188,11 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-              echo "[web]" >> /tmp/backend/inventory.txt
+              echo "[web]" >> backend/inventory.txt
               aws ec2 describe-instances \
                 --filters Name=tag:Name,Values="backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --output text >> /tmp/backend/inventory.txt
+                --output text >> backend/inventory.txt
       - persist_to_workspace:
            root: backend
            paths:
@@ -227,8 +227,8 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
-            cat /tmp/backend/inventory.txt
-            ansible-playbook -i /tmp/backend/inventory.txt .circleci/ansible/configure-server.yml
+            cat backend/inventory.txt
+            ansible-playbook -i backend/inventory.txt .circleci/ansible/configure-server.yml
         # cd .circleci/ansible
         # ansible-playbook -i inventory.txt configure-server.yml
 
