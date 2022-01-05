@@ -391,12 +391,12 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deploy
-      - destroy-environment:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"
-          when: on_fail
-      - revert-migrations:
-          id: "${CIRCLE_WORKFLOW_ID:0:7}"        
-          when: on_fail
+      # - destroy-environment:
+      #     id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      #     when: on_fail
+      # - revert-migrations:
+      #     id: "${CIRCLE_WORKFLOW_ID:0:7}"        
+      #     when: on_fail
   
   smoke-test:
     docker:
