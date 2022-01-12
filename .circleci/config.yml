@@ -268,7 +268,7 @@ jobs:
 
   deploy-frontend:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: amazon/aws-cli
     steps:
       - checkout
       - restore_cache:
@@ -301,9 +301,14 @@ jobs:
             ls -la
             cat .env
             npm install
+            sudo npm install webpack
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp ./dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/frontend/.env
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-deploy
@@ -314,28 +319,6 @@ jobs:
       - revert-migrations:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"        
           when: on_fail
-
-# sudo apt update && sudo apt upgrade
-# sudo apt install curl
-# sudo apt-get install python-pip
-# sudo pip install awscli
-# aws --version
-# - run:
-#     name: Get backend url using memstash
-#     command: |
-#         export BACKEND_PUBLIC_DNS=$(curl -H "token: 4621c6c4-2795-49e7-bea3-4191afe7cd3c" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
-#         BACKEND_API_URL="http://${BACKEND_PUBLIC_DNS}:3030/api/status"
-#         echo "Backend API URL: "$BACKEND_API_URL
-#         echo ENVIRONMENT=production > "frontend/.env"
-#         echo NODE_ENV=production >> "frontend/.env"
-#         echo API_URL=$BACKEND_API_URL >> "frontend/.env" 
-
-            # export API_URL=$(cat backend-url-${CIRCLE_WORKFLOW_ID:0:7}.txt)
-            # echo ENVIRONMENT=production > "frontend/.env"
-            # echo NODE_ENV=production >> "frontend/.env"
-            # echo API_URL=$API_URL >> "frontend/.env" 
-            # echo $API_URL
-            # echo "${API_URL}"
 
   deploy-backend:
     docker:
@@ -386,8 +369,9 @@ jobs:
           name: Deploy backend
           command: |
             echo "Contents of the inventory.txt file is -------"
-            cat .circleci/ansible/inventory.txt
-            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
+            cat backend/.env
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt deploy-backend.yml
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deploy
