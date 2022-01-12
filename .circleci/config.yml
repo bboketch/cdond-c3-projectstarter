@@ -498,18 +498,18 @@ jobs:
       - image: amazon/aws-cli
     steps:
       - checkout
-      # - run: yum install -y tar gzip
-      # - attach_workspace:
-      #     at: ~/
-      # - run:
-      #     name: Get old stack workflow id
-      #     command: |
-      #       export OldWorkflowID=$(aws cloudformation \
-      #               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-      #               --no-paginate --output text)
-      #       export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-      #               --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-      #       echo Stack names: "${STACKS[@]}" 
+      - run: yum install -y tar gzip
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Get old stack workflow id
+          command: |
+            export OldWorkflowID=$(aws cloudformation \
+                    list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+                    --no-paginate --output text)
+            export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
+                    --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
+            echo Stack names: "${STACKS[@]}" 
       - run:
           name: Remove old stacks and files
           command: |
@@ -548,5 +548,5 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [deploy-backend, deploy-frontend]
-      # - cleanup:
-      #     requires: [cloudfront-update]
+      - cleanup:
+          requires: [cloudfront-update]
