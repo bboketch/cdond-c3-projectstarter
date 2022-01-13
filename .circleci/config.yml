@@ -183,7 +183,7 @@ jobs:
                 --template-file .circleci/files/frontend.yml \
                 --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
-                --tags project=udapeople-frontend--${CIRCLE_WORKFLOW_ID:0:7}
+                --tags project=udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
 
       - run:
           name: Add back-end ip to ansible inventory
@@ -228,7 +228,7 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
-            cat /tmp/backend/inventory.txt
+            cat /backend/inventory.txt
             ansible-playbook -i inventory.txt .circleci/ansible/configure-server.yml
         # cd .circleci/ansible
         # ansible-playbook -i inventory.txt configure-server.yml
