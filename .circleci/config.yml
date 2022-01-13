@@ -188,16 +188,16 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-              echo "[web]" >> backend/inventory.txt
+              echo "[web]" >> .circlci/ansible/inventory.txt
               aws ec2 describe-instances \
                 --filters Name=tag:Name,Values="backend-${CIRCLE_WORKFLOW_ID:0:7}" \
                 --query 'Reservations[*].Instances[*].PublicIpAddress' \
-                --output text >> backend/inventory.txt
+                --output text >> .circlci/ansible/inventory.txt
               cat backend/inventory.txt
       - persist_to_workspace:
-           root: backend
+           root: ~/
            paths:
-             - inventory.txt
+             - project/.circlci/ansible/inventory.txt
       # Here's where you will add some code to rollback 
 
   configure-infrastructure:
@@ -208,7 +208,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: ["10:65:cb:53:e9:05:ce:18:f5:b1:7c:09:c7:a1:24:f9:58:1b:00:e5"]
       - attach_workspace:
-          at: backend
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -228,8 +228,8 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
-            cat backend/inventory.txt
-            ansible-playbook -i backend/inventory.txt .circleci/ansible/configure-server.yml
+            cd .circleci/ansible
+            ansible-playbook -i inventory.txt configure-server.yml
         # cd .circleci/ansible
         # ansible-playbook -i inventory.txt configure-server.yml
 
@@ -328,7 +328,7 @@ jobs:
       - restore_cache:
           keys: [backend-deploy]
       - add_ssh_keys:
-          fingerprints: ["a2:f3:59:4c:98:34:f0:18:e6:4b:c8:d2:25:3e:23:44"]
+          fingerprints: ["10:65:cb:53:e9:05:ce:18:f5:b1:7c:09:c7:a1:24:f9:58:1b:00:e5"]
       - attach_workspace:
           at: ~/
       - run:
@@ -374,8 +374,8 @@ jobs:
             aws ec2 describe-instances \
               --filters Name=tag:Name,Values="backend-${CIRCLE_WORKFLOW_ID:0:7}" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text >> backend/inventory.txt
-            ansible-playbook -i inventory.txt .circleci/ansible/deploy-backend.yml
+              --output text >> .circleci/ansible//inventory.txt
+            ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
       - save_cache:
           paths: [backend/node_modules]
           key: backend-deploy
