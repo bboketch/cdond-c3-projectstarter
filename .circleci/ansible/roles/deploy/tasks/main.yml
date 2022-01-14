@@ -15,23 +15,12 @@
     dest: /home/ubuntu
     # owner: ubuntu
     # group: ubuntu
-
-# - name: copying files
-#   become: yes
-#   copy:
-#     src: ~/project/artifact.tar.gz
-#     dest: ~/backend/artifact.tar.gz
-
-# - name: unzip artifact
-#   become: yes
-#   shell: |
-#     cd ~/backend
-#     tar -vxf artifact.tar.gz
-#     rm -f artifact.tar.gz
     
 - name: start app
   become: yes
   shell: |
     cd /home/ubuntu/backend
+    npm install
     pm2 start npm -- start
 
+ # pm2 stop default
