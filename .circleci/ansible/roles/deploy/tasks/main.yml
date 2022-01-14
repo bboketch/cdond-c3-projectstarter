@@ -8,12 +8,12 @@
     owner: ubuntu
     group: ubuntu
 
-- name: deploy backend
-  unarchive:
-    src: ~/project/artifact.tar.gz
-    dest: ~/backend
-    owner: ubuntu
-    group: ubuntu
+# - name: deploy backend
+#   unarchive:
+#     src: ~/project/artifact.tar.gz
+#     dest: ~/backend
+#     owner: ubuntu
+#     group: ubuntu
 
 - name: Install Node 
   shell: |
