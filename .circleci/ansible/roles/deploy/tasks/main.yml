@@ -9,9 +9,10 @@
     # group: ubuntu
 
 - name: extract artifact
+  become: yes
   unarchive:
     src: ~/project/artifact.tar.gz
-    dest: /home/ubuntu/backend
+    dest: /home/ubuntu
     # owner: ubuntu
     # group: ubuntu
 
@@ -29,6 +30,7 @@
 #     rm -f artifact.tar.gz
     
 - name: start app
+  become: yes
   shell: |
     cd /home/ubuntu/backend
     pm2 start npm -- start
