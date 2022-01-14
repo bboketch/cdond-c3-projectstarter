@@ -11,7 +11,7 @@
 - name: deploy backend
   unarchive:
     src: ~/project/artifact.tar.gz
-    dest: /home/ubuntu/backend
+    dest: ~/backend
     owner: ubuntu
     group: ubuntu
 
