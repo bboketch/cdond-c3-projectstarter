@@ -1,6 +1,6 @@
 ---
 
-- name: create directory
+- name: "create directory"
   become: yes
   file: 
     path: /home/ubuntu/backend
@@ -8,7 +8,7 @@
     # owner: ubuntu
     # group: ubuntu
 
-- name: deploy backend
+- name: "extract artifact"
   unarchive:
     src: ~/project/artifact.tar.gz
     dest: /home/ubuntu/backend
@@ -28,8 +28,8 @@
 #     tar -vxf artifact.tar.gz
 #     rm -f artifact.tar.gz
     
-- name: Start PM2
+- name: "start app"
   shell: |
-    cd ~/backend
+    cd /home/ubuntu/backend
     pm2 start npm -- start
 
