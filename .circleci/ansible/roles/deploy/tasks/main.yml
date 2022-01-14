@@ -27,11 +27,6 @@
     cd ~/backend
     tar -vxf artifact.tar.gz
     rm -f artifact.tar.gz
-
-- name: Install Node 
-  shell: |
-    cd ~/backend
-    npm install
     
 - name: Start PM2
   shell: |
