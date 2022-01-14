@@ -11,17 +11,30 @@
 # - name: deploy backend
 #   unarchive:
 #     src: ~/project/artifact.tar.gz
-#     dest: ~/backend
+#     dest: /home/ubuntu/backend
 #     owner: ubuntu
 #     group: ubuntu
 
+- name: copying files
+  become: yes
+  copy:
+    src: ~/project/artifact.tar.gz
+    dest: ~/backend/artifact.tar.gz
+
+- name: unzip artifact
+  become: yes
+  shell: |
+    cd ~/backend
+    tar -vxf artifact.tar.gz
+    rm -f artifact.tar.gz
+
 - name: Install Node 
   shell: |
-    cd /home/ubuntu/backend
+    cd ~/backend
     npm install
     
 - name: Start PM2
   shell: |
-    cd /home/ubuntu/backend
+    cd ~/backend
     pm2 start npm -- start
 
