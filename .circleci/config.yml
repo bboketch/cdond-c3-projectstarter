@@ -289,9 +289,9 @@ jobs:
           name: Get backend url
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --filters Name=tag:Name,Values="backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
-            export API_URL="http://${BACKEND_IP}:3030/api/status"
+            export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
-            echo API_URL="http://${BACKEND_IP}:3030/api/status" >> frontend/.env
+            echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
             echo ENVIRONMENT=production > "frontend/.env"
             echo NODE_ENV=production >> "frontend/.env"
             cat frontend/.env
@@ -391,6 +391,10 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
+      - add_ssh_keys:
+          fingerprints: ["9a:80:dc:18:05:cb:44:a6:3a:c7:20:a0:28:6d:3f:2a"]
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
