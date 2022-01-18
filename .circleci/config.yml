@@ -459,9 +459,9 @@ jobs:
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
       
-      - run:
-          name: "output URL"
-          command: echo "udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com"
+      # - run:
+      #     name: "output URL"
+      #     command: echo "udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com"
 
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
