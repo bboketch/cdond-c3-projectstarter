@@ -290,10 +290,10 @@ jobs:
           command: |
             export BACKEND_IP=$(aws ec2 describe-instances --filters Name=tag:Name,Values="backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicIpAddress' --output text)
             export API_URL="http://${BACKEND_IP}:3030"
-            echo API_URL="http://${BACKEND_IP}:3030"
-            echo ENVIRONMENT=production >> "frontend/.env"
+            echo "${API_URL}"
+            echo ENVIRONMENT=production > "frontend/.env"
             echo NODE_ENV=production >> "frontend/.env"
-            echo API_URL="http://${BACKEND_IP}:3030" >> "frontend/.env"
+            echo API_URL=${API_URL} >> "frontend/.env"
             cat frontend/.env
       - run:
           name: Deploy frontend objects
@@ -459,9 +459,9 @@ jobs:
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
       
-      # - run:
-      #     name: "output URL"
-      #     command: echo "udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com"
+      - run:
+          name: "output URL"
+          command: echo "udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.amazonaws.com"
 
       - destroy-environment:
           id: "${CIRCLE_WORKFLOW_ID:0:7}"
